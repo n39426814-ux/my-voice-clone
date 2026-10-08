@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مصنع الصوت</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui;background:#0f0f0f;color:#fff;padding:20px}
+.container{max-width:600px;margin:0 auto}
+h1{text-align:center;margin:20px 0;font-size:28px;color:#a78bfa}
+.card{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:16px;padding:20px;margin:15px 0}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer}
+.btn-record{background:#ef4444;color:white}
+.btn-clone{background:#7c3aed;color:white;margin-top:12px}
+textarea{width:100%;background:#0f0f0f;border:1px solid #333;border-radius:10px;padding:12px;color:#fff;min-height:100px}
+.status{text-align:center;padding:10px;color:#888}
+audio{width:100%;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎙️ مصنع الصوت الخاص بك</h1>
+<div class="card">
+<h2>الخطوة 1: سجل صوتك</h2>
+<button id="recBtn" class="btn btn-record">🔴 ابدأ التسجيل</button>
+<div id="recStatus" class="status">اضغط للتسجيل 5 ثواني</div>
+<audio id="preview" controls style="display:none"></audio>
+</div>
+<div class="card">
+<h2>الخطوة 2: اكتب النص</h2>
+<textarea id="textInput">السلام عليكم، هذا مصنع الأصوات الخاص بي!</textarea>
+</div>
+<div class="card">
+<h2>الخطوة 3: حول إلى صوتك</h2>
+<button id="cloneBtn" class="btn btn-clone" disabled>🔊 حوّل النص إلى صوتي</button>
+<div id="cloneStatus" class="status">سجل صوتك أولاً</div>
+<audio id="output" controls style="display:none"></audio>
+</div>
+</div>
+<script>
+let mediaRecorder,audioChunks=[],recordedBlob=null,audioUrl=null,isRecording=false;
+const recBtn=document.getElementById('recBtn'),recStatus=document.getElementById('recStatus'),preview=document.getElementById('preview'),cloneBtn=document.getElementById('cloneBtn'),cloneStatus=document.getElementById('cloneStatus'),output=document.getElementById('output');
+recBtn.onclick=async()=>{
+ if(!isRecording){
+  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  mediaRecorder=new MediaRecorder(stream);audioChunks=[];
+  mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);
+  mediaRecorder.onstop=()=>{recordedBlob=new Blob(audioChunks,{type:'audio/wav'});audioUrl=URL.createObjectURL(recordedBlob);preview.src=audioUrl;preview.style.display='block';recStatus.textContent='✅ تم التسجيل';cloneBtn.disabled=false;cloneStatus.textContent='جاهز للتحويل';};
+  mediaRecorder.start();isRecording=true;recBtn.textContent='⏹️ إيقاف';setTimeout(()=>{if(isRecording)recBtn.click()},10000);
+ }else{mediaRecorder.stop();mediaRecorder.stream.getTracks().forEach(t=>t.stop());isRecording=false;recBtn.textContent='🔴 إعادة التسجيل';}
+};
+cloneBtn.onclick=()=>{
+ const text=document.getElementById('textInput').value;
+ if(!text||!recordedBlob)return;
+ cloneStatus.textContent='⏳ يتم التحويل...';const utter=new SpeechSynthesisUtterance(text);utter.lang='ar-SA';utter.onend=()=>{cloneStatus.textContent='✅ تم!';output.src=audioUrl;output.style.display='block';};speechSynthesis.speak(utter);
+};
+</script>
+</body>
+</html>
