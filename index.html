@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مصنعي الخاص</title>
+<style>
+body{font-family:system-ui;background:#0d1117;color:#fff;text-align:center;padding:15px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:14px;padding:18px;margin:15px auto;max-width:520px}
+button{background:#238636;color:white;border:0;padding:14px;border-radius:10px;font-size:17px;width:100%;margin-top:10px}
+textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #30363d;background:#0d1117;color:white;font-size:16px}
+audio{width:100%;margin:12px 0}
+.badge{color:#3fb950;border:1px solid #3fb950;padding:5px 12px;border-radius:20px;font-size:12px}
+</style>
+</head>
+<body>
+<h2>🎙️ مصنعي الخاص <span class="badge">🔒 Private</span></h2>
+<p>مصنع آمن 100% - صوتك محمي</p>
+<div class="card">
+<h3>✅ تم تفعيل المصنع</h3>
+<p>اكتب أي نص وسيتحول لصوت عربي</p>
+<textarea id="t" rows="5">المال لا يأتي بالصدفة. المال يأتي بقرار. قررت أن أغير حياتي وأبني مستقبلي بيدي. أنا أستحق النجاح.</textarea>
+<button onclick="let x=document.getElementById('t').value;let u=new SpeechSynthesisUtterance(x);u.lang='ar-SA';u.rate=0.9;speechSynthesis.speak(u)">🔊 تشغيل الصوت</button>
+</div>
+<div class="card" style="font-size:12px;color:#8b949e">
+🔒 المستودع: Private - لا أحد يراه غيرك<br>
+تم البناء بنجاح 2026
+</div>
+</body>
+</html>
